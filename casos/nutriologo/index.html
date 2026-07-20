@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antes de una dieta — una historia sobre alimentación</title>
+
+<!--
+==========================================================================
+  GUÍA RÁPIDA DE PERSONALIZACIÓN
+==========================================================================
+  · IMÁGENES  → busca los comentarios [IMG] a lo largo del código.
+                Reemplaza las rutas en img/ por tus propias fotos, o
+                cambia las URL de Unsplash indicadas por placeholders.
+  · COLORES   → todos los colores viven en :root (bloque [COLORES]).
+  · TEXTOS    → edita libremente el contenido dentro de cada <section>.
+  · ENLACES   → busca [ENLACE] para el botón de agenda (WhatsApp/reservas).
+  · LOGO      → busca [LOGO] en la barra superior.
+==========================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ======================================================================
+   [COLORES] · Paleta — edita aquí para recolorear toda la experiencia
+   ====================================================================== */
+:root{
+  --blanco-calido:#FAF9F7;
+  --papel:#F2EEE7;
+  --salvia:#8A9A82;
+  --salvia-claro:#B7C2AD;
+  --oliva:#5A6247;
+  --oliva-tinta:#3B4032;
+  --terracota:#C06B4B;
+  --terracota-suave:#DCA68F;
+  --tinta:#2A2C26;
+  --tinta-suave:#6E7167;
+
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --medida:66ch;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--blanco-calido);color:var(--tinta);
+  font-family:var(--sans);font-weight:300;line-height:1.7;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+img{display:block;max-width:100%;height:auto}
+
+/* Barra superior con logo */
+.top{
+  position:fixed;top:0;left:0;right:0;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px clamp(20px,5vw,64px);
+  mix-blend-mode:difference;color:#fff;pointer-events:none;
+}
+/* [LOGO] */
+.top .logo{font-family:var(--serif);font-size:18px;letter-spacing:.02em;font-weight:500}
+.top .logo small{
+  display:block;font-family:var(--sans);font-size:9.5px;
+  letter-spacing:.42em;text-transform:uppercase;font-weight:400;opacity:.85;margin-top:2px;
+}
+
+/* Progreso + índice lateral */
+.progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--terracota);z-index:70;transition:width .1s linear}
+.indice{
+  position:fixed;right:clamp(14px,2.4vw,34px);top:50%;transform:translateY(-50%);z-index:55;
+  display:flex;flex-direction:column;gap:14px;mix-blend-mode:difference;
+}
+.indice a{
+  --d:6px;width:var(--d);height:var(--d);border-radius:50%;
+  border:1px solid rgba(255,255,255,.9);position:relative;text-decoration:none;
+  transition:transform .4s ease,background .4s ease;
+}
+.indice a::after{
+  content:attr(data-label);position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  white-space:nowrap;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#fff;
+  opacity:0;transition:opacity .35s ease;pointer-events:none;font-weight:400;
+}
+.indice a:hover{transform:scale(1.6)}
+.indice a:hover::after{opacity:1}
+.indice a.on{background:#fff;transform:scale(1.5)}
+@media(max-width:720px){.indice{display:none}}
+
+/* Secciones */
+section{position:relative;padding:clamp(90px,15vh,190px) clamp(22px,7vw,120px)}
+.wrap{max-width:1180px;margin:0 auto;width:100%}
+.eyebrow{
+  display:flex;align-items:baseline;gap:16px;font-family:var(--sans);
+  font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--terracota);
+  font-weight:500;margin-bottom:34px;
+}
+.eyebrow .num{font-family:var(--serif);font-size:15px;letter-spacing:0;color:var(--oliva);font-style:italic}
+.eyebrow .rule{flex:1;height:1px;background:var(--salvia-claro);opacity:.7}
+
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.08;letter-spacing:-.01em}
+.lead{
+  font-family:var(--serif);font-size:clamp(1.5rem,3.4vw,2.6rem);line-height:1.28;
+  color:var(--oliva-tinta);font-weight:400;max-width:20ch;
+}
+p.body{max-width:var(--medida);font-size:clamp(1rem,1.15vw,1.16rem);color:var(--tinta-suave)}
+.mt{margin-top:1.4em}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(38px);
+  transition:opacity 1.25s cubic-bezier(.16,.7,.2,1),transform 1.25s cubic-bezier(.16,.7,.2,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal.d1{transition-delay:.12s}.reveal.d2{transition-delay:.26s}
+.reveal.d3{transition-delay:.40s}.reveal.d4{transition-delay:.54s}
+
+.line{
+  font-family:var(--serif);font-size:clamp(1.7rem,4.6vw,3.4rem);line-height:1.22;
+  color:var(--oliva-tinta);font-weight:400;opacity:0;transform:translateY(30px);
+  transition:opacity 1s ease,transform 1s ease;margin:.16em 0;
+}
+.line.visible{opacity:1;transform:none}
+.line.mute{color:var(--salvia)}
+.line.accent{color:var(--terracota);font-style:italic}
+
+/* PORTADA */
+.hero{height:100svh;min-height:600px;display:flex;flex-direction:column;justify-content:flex-end;padding:0;position:relative;overflow:hidden}
+.hero__media{position:absolute;inset:0;z-index:-2;overflow:hidden}
+/* [IMG] PORTADA · mesa con alimentos frescos */
+.hero__media img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);animation:heroZoom 14s ease-out forwards}
+@keyframes heroZoom{to{transform:scale(1)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top,rgba(20,22,17,.72) 0%,rgba(20,22,17,.20) 46%,rgba(20,22,17,.30) 100%)}
+.hero__inner{padding:clamp(28px,7vw,90px);padding-bottom:clamp(64px,12vh,120px);max-width:1100px;color:#fff}
+.hero h1{font-size:clamp(2.1rem,6.2vw,5rem);color:#fff;max-width:16ch;font-weight:500;text-wrap:balance}
+.hero .sub{margin-top:26px;max-width:38ch;font-size:clamp(1.05rem,1.7vw,1.4rem);color:rgba(255,255,255,.86);font-weight:300}
+.hero .kicker{font-family:var(--sans);font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--terracota-suave);margin-bottom:26px;font-weight:500}
+.scrollcue{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.8);font-size:10px;letter-spacing:.32em;text-transform:uppercase}
+.scrollcue .track{width:1px;height:52px;background:rgba(255,255,255,.35);position:relative;overflow:hidden}
+.scrollcue .track::after{content:"";position:absolute;left:0;top:-52px;width:1px;height:52px;background:#fff;animation:cue 2.4s ease-in-out infinite}
+@keyframes cue{0%{top:-52px}60%,100%{top:52px}}
+
+/* Escena grande */
+.stage{min-height:88svh;display:flex;align-items:center;background:var(--papel)}
+.stage .huge{font-family:var(--serif);font-size:clamp(2.2rem,6.4vw,5.2rem);line-height:1.1;color:var(--oliva-tinta);max-width:16ch;font-weight:400;text-wrap:balance}
+.stage .huge em{font-style:italic;color:var(--terracota)}
+
+/* Escena parallax */
+.scene{position:relative;height:82svh;min-height:480px;display:flex;align-items:flex-end;overflow:hidden;padding:clamp(30px,6vw,80px)}
+.scene__bg{position:absolute;inset:-12% 0;z-index:-1;will-change:transform}
+.scene__bg img{width:100%;height:124%;object-fit:cover}
+.scene::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(to top,rgba(30,32,24,.6),rgba(30,32,24,0) 55%)}
+.scene__cap{position:relative;z-index:1;color:#fff;max-width:34ch}
+.scene__cap .t{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2.2rem);font-weight:500;margin-bottom:.35em}
+.scene__cap .d{font-size:1rem;color:rgba(255,255,255,.85);font-weight:300}
+
+/* Guía */
+.guide{background:var(--oliva-tinta);color:var(--blanco-calido)}
+.guide .grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px);align-items:center}
+/* [IMG] · retrato cercano de la nutricionista */
+.guide__portrait{position:relative;overflow:hidden;border-radius:3px}
+.guide__portrait img{width:100%;aspect-ratio:4/5;object-fit:cover;filter:saturate(.96)}
+.guide .eyebrow{color:var(--terracota-suave)}
+.guide .eyebrow .rule{background:rgba(255,255,255,.2)}
+.guide .eyebrow .num{color:var(--salvia-claro)}
+.guide .quote{font-family:var(--serif);font-size:clamp(1.5rem,2.9vw,2.35rem);line-height:1.3;font-weight:400}
+.guide .quote span{display:block;opacity:0;transform:translateY(20px);transition:opacity .9s ease,transform .9s ease}
+.guide .quote.visible span{opacity:1;transform:none}
+.guide .quote.visible span:nth-child(2){transition-delay:.35s}
+.guide .quote.visible span:nth-child(3){transition-delay:.7s}
+.guide .quote em{font-style:italic;color:var(--terracota-suave)}
+/* Antes/después integrado como una línea */
+.shift{margin-top:2.6em;font-family:var(--sans);font-size:clamp(1rem,1.4vw,1.15rem);font-weight:300;color:rgba(250,249,247,.82)}
+.shift b{color:#fff;font-weight:500}
+.shift .arrow{color:var(--terracota-suave);margin:0 .5em;font-style:normal}
+@media(max-width:760px){.guide .grid{grid-template-columns:1fr}.guide__portrait{max-width:360px}}
+
+/* Servicio */
+.service{background:var(--papel)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2px;margin-top:48px;background:var(--salvia-claro);border:1px solid var(--salvia-claro);border-radius:4px;overflow:hidden}
+.card{background:var(--blanco-calido);padding:clamp(30px,3.2vw,46px);min-height:210px;display:flex;flex-direction:column;transition:background .4s ease}
+.card:hover{background:#fff}
+.card .k{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--terracota);margin-bottom:22px}
+.card h3{font-size:clamp(1.3rem,2vw,1.6rem);margin-bottom:14px;color:var(--oliva-tinta)}
+.card p{font-size:.98rem;color:var(--tinta-suave);font-weight:300}
+
+/* Testimonio único destacado */
+.testi-solo{margin-top:64px;border-top:1px solid var(--salvia-claro);padding-top:44px}
+.testi-solo .demo-note{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--terracota);border:1px solid var(--terracota-suave);padding:5px 12px;border-radius:100px;display:inline-block;margin-bottom:26px;font-weight:500}
+.testi-solo blockquote{font-family:var(--serif);font-size:clamp(1.5rem,2.8vw,2.3rem);line-height:1.32;color:var(--oliva-tinta);font-weight:400;max-width:24ch}
+.testi-solo .who{margin-top:22px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta-suave);font-weight:500}
+.testi-solo .who em{font-style:normal;color:var(--salvia);display:block;margin-top:3px;letter-spacing:.06em;text-transform:none;font-size:12.5px}
+
+/* Cierre (con hábitos integrados) */
+.close{position:relative;overflow:hidden;color:#fff;text-align:center;padding:clamp(110px,20vh,220px) clamp(22px,7vw,120px)}
+.close__bg{position:absolute;inset:0;z-index:-2}
+/* [IMG] CIERRE · mesa compartida */
+.close__bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.05)}
+.close::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(to bottom,rgba(30,32,24,.58),rgba(30,32,24,.8))}
+.close .habit{font-family:var(--serif);font-size:clamp(1.15rem,2.2vw,1.7rem);color:rgba(255,255,255,.9);font-weight:400;max-width:26ch;margin:0 auto 8px;font-style:italic}
+.close h2{font-size:clamp(2rem,5vw,3.8rem);color:#fff;max-width:18ch;margin:38px auto 0;font-weight:500;text-wrap:balance}
+/* [ENLACE] Botón de agenda */
+.btn{display:inline-block;margin-top:44px;padding:17px 42px;border-radius:100px;background:var(--terracota);color:#fff;text-decoration:none;font-family:var(--sans);font-size:14px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;transition:transform .3s ease,background .3s ease}
+.btn:hover{background:#a9583b;transform:translateY(-2px)}
+.close .note{margin-top:26px;font-size:12px;color:rgba(255,255,255,.7);letter-spacing:.04em;font-weight:300;max-width:44ch;margin-left:auto;margin-right:auto}
+.footer{background:var(--oliva-tinta);color:rgba(255,255,255,.6);text-align:center;padding:46px 20px;font-size:12px;letter-spacing:.08em}
+.footer span{font-family:var(--serif);font-style:italic;color:var(--salvia-claro)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;scroll-behavior:auto!important}
+  .reveal,.line,.guide .quote span{opacity:1!important;transform:none!important;transition:none!important}
+  .hero__media img{transform:none!important}
+}
+:focus-visible{outline:2px solid var(--terracota);outline-offset:4px}
+</style>
+</head>
+
+<body>
+
+<div class="progress" id="progress"></div>
+
+<header class="top">
+  <!-- [LOGO] -->
+  <div class="logo">Raíz<small>Nutrición · bienestar</small></div>
+</header>
+
+<nav class="indice" id="indice" aria-label="Índice de la historia"></nav>
+
+<!-- ================= PORTADA ================= -->
+<section class="hero" id="s0" data-label="Inicio">
+  <div class="hero__media">
+    <!-- [IMG] PORTADA · mesa con alimentos frescos -->
+    <img src="img/salad.jpg" alt="Mesa de madera con un plato de ensalada fresca y cubiertos de madera">
+  </div>
+  <div class="hero__inner">
+    <p class="kicker">Una historia sobre la comida</p>
+    <h1>No todas las historias sobre alimentación comienzan con una dieta.</h1>
+    <p class="sub">A veces comienzan con una persona que simplemente dejó de sentirse bien.</p>
+  </div>
+  <div class="scrollcue"><span>Desliza</span><div class="track"></div></div>
+</section>
+
+<!-- ================= CAP 01 · Todos comemos + María (fusionados) ================= -->
+<section id="s1" data-label="Todos comemos">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="num">01</span><span>Todos comemos</span><span class="rule"></span></div>
+    <p class="line">Todos creemos saber alimentarnos.</p>
+    <p class="line accent">Pero no todos nos sentimos bien.</p>
+    <p class="body mt reveal" style="margin-top:2.6em">
+      María pensaba que necesitaba bajar de peso. En realidad, necesitaba dejar de
+      vivir peleando con la comida. Como ella, muchas personas creen que el problema
+      es el número de la báscula, cuando debajo hay emociones, hábitos y rutinas que
+      nadie les enseñó a mirar.
+    </p>
+  </div>
+</section>
+
+<!-- ================= CAP 02 · Cada plato cuenta una historia (1 escena parallax) ================= -->
+<section id="s2" data-label="Cada plato">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="num">02</span><span>La comida cuenta historias</span><span class="rule"></span></div>
+    <p class="lead reveal">Cada plato guarda una rutina, una emoción, una cultura, una manera de estar en el mundo.</p>
+  </div>
+</section>
+
+<section class="scene" style="padding-block:0" data-skip>
+  <div class="scene__bg" data-parallax>
+    <!-- [IMG] escena cotidiana · desayuno junto al portátil -->
+    <img src="img/breakfast.jpg" alt="Desayuno junto a un portátil: comer entre prisas y pantallas">
+  </div>
+  <div class="scene__cap reveal">
+    <div class="t">Un desayuno cualquiera.</div>
+    <div class="d">Entre correos y prisas, comer se vuelve un trámite. A veces no es hambre: es cansancio, prisa o ansiedad.</div>
+  </div>
+</section>
+
+<!-- ================= CAP 03 · La guía (+ antes/después integrado) ================= -->
+<section class="guide" id="s3" data-label="La guía">
+  <div class="wrap">
+    <div class="grid">
+      <div class="guide__portrait reveal">
+        <!-- [IMG] · retrato cercano de la nutricionista -->
+        <img src="img/nutricionista.jpg" alt="Retrato cercano de la nutricionista">
+      </div>
+      <div>
+        <div class="eyebrow reveal"><span class="num">03</span><span>Aquí aparezco yo</span><span class="rule"></span></div>
+        <p class="quote">
+          <span>No vine a prohibirte alimentos.</span>
+          <span>No vine a juzgar tus decisiones.</span>
+          <span>Vine a ayudarte a entender <em>qué necesita tu cuerpo</em>.</span>
+        </p>
+        <p class="shift reveal d2">
+          El camino cambia lo que sientes:
+          <b>cansancio, culpa y dietas</b> <span class="arrow">→</span>
+          <b>energía, equilibrio y hábitos que se sostienen</b>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAP 04 · El proceso + 1 testimonio ================= -->
+<section class="service" id="s4" data-label="El proceso">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="num">04</span><span>Cómo trabajamos juntos</span><span class="rule"></span></div>
+    <p class="lead reveal">Un camino claro, sin promesas milagrosas. Un paso a la vez.</p>
+    <div class="cards">
+      <div class="card reveal"><span class="k">i</span><h3>Consulta inicial</h3><p>Nos conocemos. Hablamos de tu historia y de aquello que te trajo hasta aquí.</p></div>
+      <div class="card reveal d1"><span class="k">ii</span><h3>Evaluación</h3><p>Miramos juntos tus hábitos y tu contexto, sin juicios ni etiquetas.</p></div>
+      <div class="card reveal d2"><span class="k">iii</span><h3>Plan personalizado</h3><p>Diseñamos una forma de comer que se ajuste a tu vida real, no a una ideal.</p></div>
+      <div class="card reveal d3"><span class="k">iv</span><h3>Seguimiento</h3><p>Ajustamos sobre la marcha. El cambio sostenible se construye acompañado.</p></div>
+    </div>
+
+    <div class="testi-solo reveal">
+      <span class="demo-note">Testimonio de ejemplo · demostración</span>
+      <blockquote>“No me dieron una dieta. Me devolvieron la calma a la hora de comer.”</blockquote>
+      <div class="who">Testimonio ficticio<em>Ejemplo de demostración</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CIERRE (con hábitos integrados) ================= -->
+<section class="close" id="s5" data-label="Conversemos">
+  <div class="close__bg" data-parallax>
+    <!-- [IMG] CIERRE · mesa compartida -->
+    <img src="img/salad.jpg" alt="Mesa compartida con alimentos frescos">
+  </div>
+  <p class="habit reveal">La alimentación no cambia una vida por sí sola. Los hábitos sí.</p>
+  <h2>Cuidar de ti también puede empezar con una conversación.</h2>
+  <!-- [ENLACE] Cambia el href por tu WhatsApp (https://wa.me/57...) o tu sistema de reservas -->
+  <a class="btn" href="#" id="cta">Agenda una consulta</a>
+  <p class="note">Nota para configurar: este botón puede enlazarse posteriormente a WhatsApp o al sistema de reservas.</p>
+</section>
+
+<footer class="footer">
+  Una experiencia narrativa · hecha con intención por <span>Raíz Nutrición</span>
+</footer>
+
+<script>
+/* 1 · Progreso */
+const progress=document.getElementById('progress');
+function onScroll(){const h=document.documentElement;const max=h.scrollHeight-h.clientHeight;progress.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';}
+document.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* 2 · Índice lateral */
+const sections=[...document.querySelectorAll('section[data-label]')];
+const indice=document.getElementById('indice');
+sections.forEach(sec=>{const a=document.createElement('a');a.href='#'+sec.id;a.dataset.label=sec.dataset.label;a.setAttribute('aria-label','Ir a '+sec.dataset.label);indice.appendChild(a);});
+const dots=[...indice.querySelectorAll('a')];
+const dotObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const i=sections.indexOf(e.target);dots.forEach((d,k)=>d.classList.toggle('on',k===i));}});},{threshold:.5});
+sections.forEach(s=>dotObs.observe(s));
+
+/* 3 · Reveal */
+const revObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revObs.unobserve(e.target);}});},{threshold:.18,rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal,.guide .quote').forEach(el=>revObs.observe(el));
+
+/* 4 · Líneas escalonadas */
+const lineObs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const lines=[...e.target.querySelectorAll('.line')];lines.forEach((l,i)=>setTimeout(()=>l.classList.add('visible'),i*380));lineObs.unobserve(e.target);}});},{threshold:.35});
+document.querySelectorAll('#s1').forEach(s=>lineObs.observe(s));
+
+/* 5 · Parallax */
+const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+const parallax=[...document.querySelectorAll('[data-parallax]')];
+let ticking=false;
+function parallaxUpdate(){const vh=window.innerHeight;parallax.forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;const prog=(r.top+r.height/2-vh/2)/vh;el.style.transform='translateY('+(prog*-26)+'px)';});ticking=false;}
+if(!reduce){document.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(parallaxUpdate);ticking=true;}},{passive:true});parallaxUpdate();}
+
+/* 6 · Botón agenda */
+document.getElementById('cta').addEventListener('click',function(e){if(this.getAttribute('href')==='#'){e.preventDefault();alert('Configura este botón: enlázalo a tu WhatsApp (https://wa.me/57XXXXXXXXXX) o a tu sistema de reservas.');}});
+</script>
+</body>
+</html>
